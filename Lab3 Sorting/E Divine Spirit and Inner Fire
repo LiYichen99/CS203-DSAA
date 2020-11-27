@@ -1,0 +1,241 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        Reader in=new Reader();
+        PrintWriter out=new PrintWriter(System.out);
+        int n = in.nextInt();
+        int p = in.nextInt();
+        int q = in.nextInt();
+        long r =1;
+        for(int i = 0;i<p;i++){
+            r*=2;
+        }
+        long sum = 0;
+        int count = 0;
+        long[] hk = new long[n];
+        long[] apk = new long[n];
+        long[][] pk = new long[n][2];
+        long[][] ppk = new long[n][2];
+        for(int i = 0;i<n;i++){
+            hk[i] = in.nextLong();
+            apk[i] = in.nextLong();
+            pk[i][0] = hk[i] - apk[i];
+            pk[i][1] = i;
+            sum+=apk[i];
+            if(pk[i][0]>0){
+                count++;
+            }
+        }
+        pk = mergeSort(pk,n);
+        if(q == 0){
+            out.print(sum);
+        }else {
+            if (q - 1 >= count) {
+                for (int i = 0; i < count; i++) {
+                    sum += pk[n - 1 - i][0];
+                }
+                for (int i = 0; i < n; i++) {
+                    if (i >= n - count) {
+                        ppk[(int) pk[i][1]][0] = sum + hk[(int) pk[i][1]] * (r - 1);
+                        ppk[(int) pk[i][1]][1] = pk[i][1];
+                    } else {
+                        if (hk[(int) pk[i][1]] * r - apk[(int) pk[i][1]] > 0) {
+                            ppk[(int) pk[i][1]][0] = sum + hk[(int) pk[i][1]] * r - apk[(int) pk[i][1]];
+                        } else {
+                            ppk[(int) pk[i][1]][0] = sum;
+                        }
+                        ppk[(int) pk[i][1]][1] = pk[i][1];
+                    }
+                }
+            } else {
+                for (int i = 0; i < q - 1; i++) {
+                    sum += pk[n - 1 - i][0];
+                }
+                for (int i = 0; i < n; i++) {
+                    if (i >= n - q + 1) {
+                        ppk[(int) pk[i][1]][0] = sum + hk[(int) pk[i][1]] * (r - 1) + pk[n - q][0];
+                        ppk[(int) pk[i][1]][1] = pk[i][1];
+                    } else {
+                        if (hk[(int) pk[i][1]] * r - apk[(int) pk[i][1]] > 0) {
+                            ppk[(int) pk[i][1]][0] = sum + hk[(int) pk[i][1]] * r - apk[(int) pk[i][1]];
+                        } else {
+                            ppk[(int) pk[i][1]][0] = sum;
+                        }
+                        ppk[(int) pk[i][1]][1] = pk[i][1];
+                    }
+                }
+            }
+            ppk = mergeSort(ppk, n);
+            out.print(ppk[n - 1][0]);
+        }
+        out.close();
+    }
+
+    public static long[][] mergeSort(long[][] a,int n){
+        if(n>1){
+            int p = n/2;
+            long[][] b = new long[p][2];
+            long[][] c = new long[n-p][2];
+            for(int i = 0;i<p;i++){
+                b[i][0] = a[i][0];
+                b[i][1] = a[i][1];
+            }
+            for(int i = 0;i<(n-p);i++){
+                c[i][0] = a[p+i][0];
+                c[i][1] = a[p+i][1];
+            }
+            long[][] bb = mergeSort(b,b.length);
+            long[][] cc = mergeSort(c,c.length);
+            long[][] d = merge(bb,cc);
+            return d;
+        }else{
+            return a;
+        }
+
+
+    }
+
+    public static long[][] merge(long[][] b,long[][] c){
+        long[][] a = new long[b.length+c.length][2];
+        int i = 0;
+        int j = 0;
+        for(int k = 0;k<b.length+c.length;k++){
+            if(i<b.length && (j>=c.length || b[i][0]<=c[j][0])){
+                a[k][0] = b[i][0];
+                a[k][1] = b[i][1];
+                i++;
+            }else{
+                a[k][0] = c[j][0];
+                a[k][1] = c[j][1];
+                j++;
+            }
+        }
+        return a;
+    }
+
+
+    static class Reader
+    {
+        final private int BUFFER_SIZE = 1 << 16;
+        private DataInputStream din;
+        private byte[] buffer;
+        private int bufferPointer, bytesRead;
+
+        public Reader()
+        {
+            din = new DataInputStream(System.in);
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+
+        public Reader(String file_name) throws IOException
+        {
+            din = new DataInputStream(new FileInputStream(file_name));
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+
+        public String readLine() throws IOException
+        {
+            byte[] buf = new byte[64]; // line length
+            int cnt = 0, c;
+            while ((c = read()) != -1)
+            {
+                if (c == '\n')
+                    break;
+                buf[cnt++] = (byte) c;
+            }
+            return new String(buf, 0, cnt);
+        }
+
+        public int nextInt() throws IOException
+        {
+            int ret = 0;
+            byte c = read();
+            while (c <= ' ')
+                c = read();
+            boolean neg = (c == '-');
+            if (neg)
+                c = read();
+            do
+            {
+                ret = ret * 10 + c - '0';
+            }  while ((c = read()) >= '0' && c <= '9');
+
+            if (neg)
+                return -ret;
+            return ret;
+        }
+
+        public long nextLong() throws IOException
+        {
+            long ret = 0;
+            byte c = read();
+            while (c <= ' ')
+                c = read();
+            boolean neg = (c == '-');
+            if (neg)
+                c = read();
+            do {
+                ret = ret * 10 + c - '0';
+            }
+            while ((c = read()) >= '0' && c <= '9');
+            if (neg)
+                return -ret;
+            return ret;
+        }
+
+        public double nextDouble() throws IOException
+        {
+            double ret = 0, div = 1;
+            byte c = read();
+            while (c <= ' ')
+                c = read();
+            boolean neg = (c == '-');
+            if (neg)
+                c = read();
+
+            do {
+                ret = ret * 10 + c - '0';
+            }
+            while ((c = read()) >= '0' && c <= '9');
+
+            if (c == '.')
+            {
+                while ((c = read()) >= '0' && c <= '9')
+                {
+                    ret += (c - '0') / (div *= 10);
+                }
+            }
+
+            if (neg)
+                return -ret;
+            return ret;
+        }
+
+        private void fillBuffer() throws IOException
+        {
+            bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
+            if (bytesRead == -1)
+                buffer[0] = -1;
+        }
+
+        private byte read() throws IOException
+        {
+            if (bufferPointer == bytesRead)
+                fillBuffer();
+            return buffer[bufferPointer++];
+        }
+
+        public void close() throws IOException
+        {
+            if (din == null)
+                return;
+            din.close();
+        }
+    }
+
+}
