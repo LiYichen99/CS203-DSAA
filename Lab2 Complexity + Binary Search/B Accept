@@ -1,0 +1,67 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        int N = input.nextInt();
+        int T = input.nextInt();
+        ArrayList<Long> d = new ArrayList<>();
+
+        for (int i = 0; i < N; i++) {
+            d.add(i, input.nextLong());
+        }
+        for (int j = 0; j < T; j++) {
+            long e = input.nextLong();
+            int a = 0;
+            int b = d.size()-1;
+            if(d.get(0) > e){
+                System.out.println();
+                break;
+            }
+            for (int i = 0; i < d.size(); i++) {
+                int c = (a + b)/2;
+                if(d.get(c) == e){
+                    System.out.println("Accept");
+
+                    break;
+                }else if(d.get(c) > e){
+                    b = c;
+                }else{
+                    a = c;
+                }
+                if(d.get(a) == e ) {
+                    System.out.println("Accept");
+
+                    break;
+                }
+                if(d.get(b) == e ) {
+                    System.out.println("Accept");
+
+                    break;
+                }
+                if(a == b && d.get(b)< e){
+                    System.out.println(e-d.get(b));
+
+                    break;
+                }
+                if(b-a==1){
+                    if(d.get(b)< e){
+                        System.out.println(e-d.get(b));
+
+                        break;
+                    }else if(d.get(a)<e && d.get(b)>e){
+                        System.out.println(e-d.get(a));
+
+                        break;
+                    }
+                }
+
+
+            }
+        }
+
+
+    }
+}
