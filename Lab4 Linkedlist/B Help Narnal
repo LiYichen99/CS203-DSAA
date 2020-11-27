@@ -1,0 +1,115 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int T = in.nextInt();
+        for(int i = 0;i<T;i++){
+            int n = in.nextInt();
+            String input = in.next();
+            char[] a = input.toCharArray();
+            int index = 1;
+            LinkedList c = new LinkedList();
+            Node node = c.tail;
+            for(int j = 0;j<n;j++){
+                if(Character.isDigit(a[j])){
+                    c.add(node,Integer.parseInt(String.valueOf(a[j])));
+                    index++;
+                } else if(a[j]=='r'){
+                    if(j<n-1){
+                        if(Character.isDigit(a[j+1])){
+                            if(index == c.size()-1){
+                                j++;
+                                c.add(node, Integer.parseInt(String.valueOf(a[j])));
+                                node = node.prev;
+                            }else if(index<c.size()-1){
+                                j++;
+                                c.set(node, Integer.parseInt(String.valueOf(a[j])));
+                            }
+                        }
+                    }
+                }else if(a[j] == 'I'){
+                    index = 1;
+                    node = c.head.next;
+                }else if(a[j] == 'H'){
+                    if(index>1){
+                        index--;
+                        node = node.prev;
+                    }
+                }else if(a[j] == 'L'){
+                    if(index<c.size()-1){
+                        index++;
+                        node = node.next;
+                    }
+                }else if(a[j] == 'x'){
+                    if(index<c.size()-1){
+                        Node node1 = node;
+                        node = node.next;
+                        c.remove(node1);
+                    }
+                }
+            }
+            if(c.size()>2){
+                node = c.head;
+                for(int j = 0;j<c.size()-2;j++){
+                    node = node.next;
+                    System.out.print(node.getElement());
+                }
+            }
+            System.out.println();
+        }
+
+        in.close();
+    }
+
+}
+class Node {
+    int element;
+    Node next;
+    Node prev;
+
+    public Node(int element) {
+        this.element = element;
+        next = null;
+        prev = null;
+    }
+    public void setElement(int element){
+        this.element = element;
+    }
+    public int getElement(){
+        return element;
+    }
+
+}
+class LinkedList {
+    private int count = 2;
+    Node tail = new Node(-1);
+    Node head = new Node(-1);
+    public LinkedList(){
+        head.next = tail;
+        tail.prev = head;
+    }
+    public int size() {
+        return count;
+    }
+    public void add(Node nextNode, int element) {
+        Node node = new Node(element);
+        nextNode.prev.next = node;
+        node.prev = nextNode.prev;
+        node.next = nextNode;
+        nextNode.prev = node;
+        count++;
+    }
+    public void set(Node node, int element){
+        node.setElement(element);
+
+    }
+    public void remove(Node node) {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+        node.prev = null;
+        node.next = null;
+        count--;
+    }
+
+}
