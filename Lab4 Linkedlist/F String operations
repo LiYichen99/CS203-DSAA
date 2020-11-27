@@ -1,0 +1,138 @@
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int T = in.nextInt();
+        for (int i = 0; i < T; i++) {
+            String S = in.next();
+            char[] s = S.toCharArray();
+            LinkedList a = new LinkedList();
+            LinkedList2 b = new LinkedList2();
+            for(int j = 0;j<s.length;j++){
+                a.add(s[j]);
+            }
+            Node node = a.head;
+            b.add(a.head);
+            for(int j = 0;j<s.length;j++){
+                node = node.next;
+                if((j+1)%1000==0){
+                    b.add(node);
+                }
+            }
+            int n = in.nextInt();
+            for (int j = 0; j < n; j++) {
+                if (in.nextInt() == 1) {
+                    char ch = in.next().charAt(0);
+                    int p = in.nextInt();
+                    Node newNode = new Node(ch);
+                    Node2 node2 = b.find(p/1000+1);
+                    node = a.find(node2.getNode(), p%1000);
+                    a.add(node, newNode);
+                    if(p%1000==0){
+                        b.set(node2, newNode);
+                    }
+                    for(int k = p/1000+1;k<b.size()-2;k++){
+                        node2 = node2.next;
+                        b.set(node2,node2.getNode().prev);
+                    }
+                    if(((a.size()-2)/1000+3)>b.size()){
+                        b.add(a.tail.prev);
+                    }
+                } else {
+                    int p = in.nextInt();
+                    Node2 node2 = b.find(p/1000+1);
+                    node = a.find(node2.getNode(), p%1000);
+                    System.out.println(node.getElement());
+                }
+            }
+
+        }
+    }
+}
+class Node {
+    char element;
+    Node next;
+    Node prev;
+    public Node(char element) {
+        this.element = element;
+        next = null;
+        prev = null;
+    }
+    public char getElement(){ return element; }
+}
+class Node2{
+    Node node;
+    Node2 prev;
+    Node2 next;
+    public Node2(Node node){
+        this.node = node;
+        prev = null;
+        next = null;
+    }
+    public void setNode(Node node){ this.node = node; }
+    public Node getNode(){ return node; }
+}
+class LinkedList2{
+    private int count = 2;
+    Node2 head = new Node2(new Node('a'));
+    Node2 tail = new Node2(new Node('z'));
+    public LinkedList2(){
+        head.next = tail;
+        tail.prev = head;
+    }
+    public int size(){ return count; }
+    public void add(Node node){
+        Node2 node2 = new Node2(node);
+        node2.prev = tail.prev;
+        node2.next = tail;
+        tail.prev.next = node2;
+        tail.prev = node2;
+        count++;
+    }
+    public Node2 find(int index){
+        Node2 node2 = head;
+        for(int i = 0;i<index;i++){
+            node2 = node2.next;
+        }
+        return node2;
+    }
+    public void set(Node2 node2, Node node){
+        node2.setNode(node);
+    }
+}
+
+class LinkedList {
+    private int count = 2;
+    Node head = new Node('a');
+    Node tail = new Node('z');
+    public LinkedList(){
+        head.next = tail;
+        tail.prev = head;
+    }
+    public int size() {
+        return count;
+    }
+    public void add(char element){
+        Node node = new Node(element);
+        node.prev = tail.prev;
+        node.next = tail;
+        tail.prev.next = node;
+        tail.prev = node;
+        count++;
+    }
+    public void add(Node node, Node newNode){
+        newNode.prev = node.prev;
+        newNode.next = node;
+        node.prev.next = newNode;
+        node.prev = newNode;
+        count++;
+    }
+    public Node find(Node node, int index){
+        for(int i = 0;i<index;i++){
+            node = node.next;
+        }
+        return node;
+    }
+}
