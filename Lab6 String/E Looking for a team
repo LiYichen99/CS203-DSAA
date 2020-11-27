@@ -1,0 +1,62 @@
+import java.util.HashSet;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        String s1 = in.next();
+        String s2 = in.next();
+        int a = 0;
+        int b = Math.min(s1.length(),s2.length());
+        int c;
+        while(a<b) {
+            c = a+(b-a+1)/2;
+            if(judge(s1,s2,c)){
+                a = c;
+            }else{
+                b = c - 1;
+            }
+        }
+        System.out.println(a);
+        in.close();
+    }
+    public static boolean judge(String s1, String s2, int n){
+        HashSet<Long> hash = new HashSet<>();
+        if(n==0){
+            return true;
+        }
+        int d = 128;
+        long mod = 805306457;
+        long a1 = 0;
+        long a2 = 0;
+        long dn = 1;
+        for(int i = 0;i<n-1;i++){
+            dn = dn*d%mod;
+        }
+        for (int i = 0; i < n; i++) {
+            a1 = (a1 * d + (int)s1.charAt(i)) % mod;
+            a2 = (a2 * d + (int)s2.charAt(i)) % mod;
+        }
+        hash.add(a1);
+        for(int i = 0;i<s1.length()-n;i++){
+            a1 = ((a1 - (int)s1.charAt(i) * dn % mod + mod) * d % mod + (int)s1.charAt(n+i)) % mod;
+            hash.add(a1);
+        }
+        if (hash.contains(a2)) {
+            if (s1.contains(s2.substring(0, n))) {
+                return true;
+            }
+        }
+        for (int i = 0;i<s2.length()-n;i++) {
+            a2 = ((a2 - (int)s2.charAt(i) * dn % mod + mod) * d % mod + (int)s2.charAt(n+i)) % mod;
+            if (hash.contains(a2)){
+                if (s1.contains(s2.substring(i+1, i+n+1))){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+}
