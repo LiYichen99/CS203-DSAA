@@ -1,0 +1,32 @@
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        String s = in.next();
+        char[] pre = s.toCharArray();
+        int prelen = pre.length;
+        char[] suf = s.toCharArray();
+        int suflen = prelen;
+        for(int i = 0;i<n-1;i++){
+            s = in.next();
+            char[] c = s.toCharArray();
+            for(int j = 0;j<c.length&&j<prelen;j++){
+                if(c[j]!=pre[j]){
+                    prelen = j;
+                    break;
+                }
+            }
+            for(int j = 0;j<c.length&&j<suflen;j++){
+                if(c[c.length-j-1]!=suf[suf.length-j-1]){
+                    suflen = j;
+                    break;
+                }
+            }
+        }
+        System.out.println(prelen*suflen);
+        in.close();
+    }
+}
