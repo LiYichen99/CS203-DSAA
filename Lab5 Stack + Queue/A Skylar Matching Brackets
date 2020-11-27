@@ -1,0 +1,76 @@
+import java.util.Scanner;
+class Stack{
+    int index = -1;
+    int maxsize;
+    char[] a;
+    public Stack(int n){
+        a = new char[n];
+        maxsize = n;
+    }
+    public void push(char element){
+        if(index+1<maxsize){
+            index++;
+            a[index] = element;
+        }
+    }
+    public char pop(){
+        if(index>=0){
+            char b = a[index];
+            index--;
+            return b;
+        }
+        return '0';
+    }
+}
+
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int T = in.nextInt();
+        for (int i = 0; i < T; i++) {
+            int n = in.nextInt();
+            char[] s = in.next().toCharArray();
+            if (n % 2 == 1) {
+                System.out.println("NO");
+            } else {
+                if(judge(n,s)){
+                    System.out.println("YES");
+                }else {
+                    System.out.println("NO");
+                }
+            }
+        }
+    }
+
+    public static boolean judge(int n, char[] s) {
+        Stack a = new Stack(n);
+        char b;
+        for (int i = 0; i < n; i++) {
+            if (s[i] == '(') {
+                a.push(s[i]);
+            } else if (s[i] == ')') {
+                b = a.pop();
+                if (b != '(') {
+                    return false;
+                }
+            } else if (s[i] == '{') {
+                a.push(s[i]);
+            }else if(s[i] == '}'){
+                b = a.pop();
+                if(b!='{'){
+                    return false;
+                }
+            }else if(s[i] == '['){
+                a.push(s[i]);
+            }else if(s[i] == ']'){
+                b = a.pop();
+                if(b!='['){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
