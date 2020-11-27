@@ -1,0 +1,295 @@
+import java.io.*;
+import java.util.*;
+class Node {
+    int element;
+    Node next;
+    Node prev;
+    public Node(int element) {
+        this.element = element;
+        next = null;
+        prev = null;
+    }
+    public int getElement(){ return element; }
+}
+class Node2{
+    Node node;
+    Node2 prev;
+    Node2 next;
+    public Node2(Node node){
+        this.node = node;
+        prev = null;
+        next = null;
+    }
+    public void setNode(Node node){ this.node = node; }
+    public Node getNode(){ return node; }
+}
+class LinkedList2{
+    private int count = 2;
+    Node2 head = new Node2(new Node(0));
+    Node2 tail = new Node2(new Node(100001));
+    public LinkedList2(){
+        head.next = tail;
+        tail.prev = head;
+    }
+    public int size(){ return count; }
+    public void add(Node node){
+        Node2 node2 = new Node2(node);
+        node2.prev = tail.prev;
+        node2.next = tail;
+        tail.prev.next = node2;
+        tail.prev = node2;
+        count++;
+    }
+    public void remove(Node2 node2) {
+        node2.prev.next = node2.next;
+        node2.next.prev = node2.prev;
+        node2.prev = null;
+        node2.next = null;
+        count--;
+    }
+    public void set(Node2 node2, Node node){ node2.setNode(node); }
+}
+
+class LinkedList {
+    private int count = 2;
+    Node head = new Node(0);
+    Node tail = new Node(100001);
+    public LinkedList(){
+        head.next = tail;
+        tail.prev = head;
+    }
+    public int size() {
+        return count;
+    }
+    public void add(int element){
+        Node node = new Node(element);
+        node.prev = tail.prev;
+        node.next = tail;
+        tail.prev.next = node;
+        tail.prev = node;
+        count++;
+    }
+    public void remove(Node node) {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+        node.prev = null;
+        node.next = null;
+        count--;
+    }
+}
+public class Main {
+    public static void main(String[] args) throws IOException {
+        Reader in=new Reader();
+        PrintWriter out=new PrintWriter(System.out);
+        int T = in.nextInt();
+        for(int i = 0;i<T;i++){
+            LinkedList a = new LinkedList();
+            int n = in.nextInt();
+            for(int j = 0;j<n;j++){
+                a.add(in.nextInt());
+            }
+            if(n == 2){
+                if(a.head.next.getElement()>a.tail.prev.getElement()){
+                    a.remove(a.head.next);
+                    a.remove(a.tail.prev);
+                }
+            }else {
+                LinkedList2 b = new LinkedList2();
+                Node node = a.head;
+                b.add(a.head.next);
+                for(int j = 1;j<n;j++){
+                    node = node.next;
+                    if(node.getElement()>node.next.getElement()){
+                        b.add(node);
+                        b.add(node.next);
+                    }
+                }
+                b.add(a.tail.prev);
+                while (b.size() > 4) {
+                    Node2 node2 = b.head.next;
+                    Node nodeX = new Node(0);
+                    int x = b.size();
+                    int first = 1;
+                    for (int j = 2; j < x - 1; j += 2) {
+                        if (node2.getNode().equals(node2.next.getNode())) {
+                            if (node2.next.getNode().equals(a.tail.prev)) {
+                                a.remove(node2.getNode());
+                                b.remove(node2.next);
+                                b.remove(node2);
+                            } else {
+                                if(node2.getNode().equals(a.head.next)&& first == 1){
+                                    first = 0;
+                                }
+                                a.remove(node2.getNode());
+                                Node2 node2nex = node2.next;
+                                b.remove(node2);
+                                node2 = node2nex.next;
+                                b.remove(node2nex);
+                            }
+                        } else if (node2.getNode().next.equals(node2.next.getNode())) {
+                            if (node2.next.getNode().equals(a.tail.prev)) {
+                                if (nodeX.getElement() != 0 && nodeX.getElement() <= node2.next.getNode().getElement()) {
+                                    a.remove(node2.getNode());
+                                    b.remove(node2.prev);
+                                    b.remove(node2);
+                                } else {
+                                    Node node2n = node2.getNode().next;
+                                    a.remove(node2.getNode());
+                                    b.set(node2, node2n);
+                                }
+                            } else if (node2.getNode().equals(a.head.next)&&first ==1) {
+                                first = 0;
+                                a.remove(node2.next.getNode());
+                                b.set(node2.next, node2.getNode());
+                                nodeX = node2.getNode();
+                                node2 = node2.next.next;
+                            } else {
+                                a.remove(node2.getNode());
+                                a.remove(node2.next.getNode());
+                                Node2 node2nex = node2.next;
+                                b.remove(node2);
+                                node2 = node2nex.next;
+                                b.remove(node2nex);
+                            }
+                        } else {
+                            Node nodeA = node2.getNode();
+                            Node nodeB = node2.next.getNode();
+                            if (nodeX.getElement() != 0 && nodeX.getElement() <= nodeA.next.getElement()) {
+                                if (nodeB.equals(a.tail.prev)) {
+                                    b.remove(node2.prev);
+                                    b.remove(node2);
+                                    a.remove(nodeA);
+                                } else {
+                                    nodeX = nodeB.prev;
+                                    b.set(node2.next, nodeB.prev);
+                                    b.remove(node2.prev);
+                                    Node2 node2nex = node2.next;
+                                    b.remove(node2);
+                                    node2 = node2nex.next;
+                                    a.remove(nodeA);
+                                    a.remove(nodeB);
+                                }
+                            } else {
+                                if (nodeB.equals(a.tail.prev)) {
+                                    b.set(node2, nodeA.next);
+                                    a.remove(nodeA);
+                                } else if (nodeA.equals(a.head.next)&&first == 1) {
+                                    first = 0;
+                                    nodeX = nodeB.prev;
+                                    b.set(node2.next, nodeB.prev);
+                                    a.remove(nodeB);
+                                    node2 = node2.next.next;
+                                } else {
+                                    nodeX = nodeB.prev;
+                                    b.set(node2, nodeA.next);
+                                    b.set(node2.next, nodeB.prev);
+                                    a.remove(nodeA);
+                                    a.remove(nodeB);
+                                    node2 = node2.next.next;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            Node node = a.head;
+            for(int j = 0;j<a.size()-2;j++){
+                node = node.next;
+                out.print(node.getElement()+" ");
+            }
+            out.println();
+        }
+        out.close();
+    }
+    static class Reader {
+        final private int BUFFER_SIZE = 1 << 16;
+        private DataInputStream din;
+        private byte[] buffer;
+        private int bufferPointer, bytesRead;
+        public Reader() {
+            din = new DataInputStream(System.in);
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+        public Reader(String file_name) throws IOException {
+            din = new DataInputStream(new FileInputStream(file_name));
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+        public String readLine() throws IOException {
+            byte[] buf = new byte[64]; // line length
+            int cnt = 0, c;
+            while ((c = read()) != -1) {
+                if (c == '\n')
+                    break;
+                buf[cnt++] = (byte) c;
+            }
+            return new String(buf, 0, cnt);
+        }
+        public int nextInt() throws IOException {
+            int ret = 0;
+            byte c = read();
+            while (c <= ' ')
+                c = read();
+            boolean neg = (c == '-');
+            if (neg)
+                c = read();
+            do {
+                ret = ret * 10 + c - '0';
+            }  while ((c = read()) >= '0' && c <= '9');
+            if (neg)
+                return -ret;
+            return ret;
+        }
+        public long nextLong() throws IOException {
+            long ret = 0;
+            byte c = read();
+            while (c <= ' ')
+                c = read();
+            boolean neg = (c == '-');
+            if (neg)
+                c = read();
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+            if (neg)
+                return -ret;
+            return ret;
+        }
+        public double nextDouble() throws IOException {
+            double ret = 0, div = 1;
+            byte c = read();
+            while (c <= ' ')
+                c = read();
+            boolean neg = (c == '-');
+            if (neg)
+                c = read();
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+            if (c == '.') {
+                while ((c = read()) >= '0' && c <= '9') {
+                    ret += (c - '0') / (div *= 10);
+                }
+            }
+            if (neg)
+                return -ret;
+            return ret;
+        }
+        private void fillBuffer() throws IOException {
+            bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
+            if (bytesRead == -1)
+                buffer[0] = -1;
+        }
+        private byte read() throws IOException {
+            if (bufferPointer == bytesRead)
+                fillBuffer();
+            return buffer[bufferPointer++];
+        }
+        public void close() throws IOException {
+            if (din == null)
+                return;
+            din.close();
+        }
+    }
+}
