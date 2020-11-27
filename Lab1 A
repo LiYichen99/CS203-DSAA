@@ -1,0 +1,27 @@
+import java.util.Scanner;
+public class Main {
+
+    public static void main(String[] args){
+	Scanner input = new Scanner(System.in);
+	int T = input.nextInt();
+	for(int i = 0; i< T; i++){
+	       int a = input.nextInt();
+	       int b = input.nextInt();
+	       int n = input.nextInt();
+	       System.out.println(calculate(a,b,n));
+    }
+	input.close();
+    }
+
+	public static int calculate(int a, int b, int n) {
+        if (n % 3 == 0) {
+            return a;
+        } else if (n % 3 == 1) {
+            return b;
+        } else {
+            return a ^ b;
+
+        }
+    }
+
+}
