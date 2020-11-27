@@ -70,8 +70,10 @@ public class Main {
         for(int k = 0;k<a.length;k++){
             if(i<b.length && (j>=c.length || b[i]<=c[j])){
                 a[k] = b[i];
+                i++;
             }else{
                 a[k] = c[j];
+                j++;
             }
         }
         return a;
