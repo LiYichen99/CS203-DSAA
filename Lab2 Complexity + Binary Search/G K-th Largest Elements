@@ -1,0 +1,80 @@
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        int T = input.nextInt();
+
+        for(int i = 0;i<T;i++){
+            int n = input.nextInt();
+            int K = input.nextInt();
+            long M = input.nextLong();
+            long[] a = new long[n];
+            long max = 0;
+            for(int j = 0;j<n;j++){
+                a[j] = input.nextLong();
+               if(a[j]>max){
+                   max = a[j];
+               }
+            }
+            System.out.println(calculate(a,max,n,K,M));
+
+        }
+    }
+    public static long calculate(long[]a, long max, int n,int K,long M){
+        long x = 0;
+        long y = max;
+        long c = 0;
+        while(x<y) {
+            c = (x+y)/2;
+            if(x == c){
+                break;
+            }
+            int count = 0;
+            long num = 0;
+            int i,j;
+            for (i = 0; i < n; i++) {
+                if (a[i] >= c) {
+                    count++;
+                }
+                if (count == K) {
+                    break;
+                }
+            }
+            if (count == K) {
+                long l = 1;
+                for (j = 0; j < i - K + 1; j++) {
+                    if (a[j] < c) {
+                        l++;
+                    } else {
+                        break;
+                    }
+                }
+                num += l;
+                while (i < n - 1) {
+                    i++;
+                    if (a[i] >= c) {
+                        l++;
+                        for (j += 1; j < i - K + 1; j++) {
+                            if (a[j] < c) {
+                                l++;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                    num += l;
+                }
+                if (num < M) {
+                    y = c;
+                } else if (num >= M) {
+                    x = c;
+                }
+            } else {
+                y = c;
+            }
+        }
+        return c;
+    }
+}
