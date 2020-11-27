@@ -1,0 +1,61 @@
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int T = in.nextInt();
+        for (int i = 0; i < T; i++) {
+            int n = in.nextInt();
+            int[] preOrder = new int[n];
+            int[] inOrder = new int[n];
+            for(int j = 0;j<n;j++){
+                preOrder[j] = in.nextInt();
+            }
+            for(int j = 0;j<n;j++){
+                inOrder[j] = in.nextInt();
+            }
+            TreeNode root = tree_from_preOrder_inOrder(preOrder, inOrder, 0, n-1, 0, n-1);
+            postOrder_Recursive(root);
+            System.out.println();
+
+        }
+    }
+    // l1: pre中子树的起点 r1: pre中子树的终点 l2: in中子树的起点 r2: in中子树的终点
+    public static TreeNode tree_from_preOrder_inOrder(int[] pre, int[] in, int l1, int r1, int l2, int r2){
+        if(l2>r2){
+            return null;
+        }
+        TreeNode root = new TreeNode(pre[l1]);
+        int count = 0;
+        int i;
+        for( i = l2;in[i]!=pre[l1];i++){
+            count++;
+        }
+        root.left = tree_from_preOrder_inOrder(pre, in, l1+1, l1+count, l2, i-1);
+        root.right = tree_from_preOrder_inOrder(pre, in, l1+count+1, r1, i+1, r2);
+        return root;
+    }
+    public static void postOrder_Recursive(TreeNode root){
+        if(root.left!=null){
+            postOrder_Recursive(root.left);
+        }
+        if(root.right!=null){
+            postOrder_Recursive(root.right);
+        }
+        System.out.print(root.getVal()+" ");
+    }
+}
+class TreeNode{
+    int val;
+    TreeNode left;
+    TreeNode right;
+    public TreeNode(int val){
+        this.val = val;
+        left = null;
+        right = null;
+    }
+    public int getVal(){
+        return val;
+    }
+}
