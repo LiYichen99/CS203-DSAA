@@ -1,0 +1,131 @@
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+class TreeNode{
+    long val;
+    int index;
+    TreeNode left;
+    TreeNode right;
+    TreeNode father;
+    public TreeNode(long val, int index){
+        this.val = val;
+        this.index = index;
+        left = null;
+        right = null;
+        father = null;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public long getVal() {
+        return val;
+    }
+
+    public void setVal(long val) {
+        this.val = val;
+    }
+
+    public void setChildren(TreeNode child){
+        if(left == null){
+            left = child;
+        }else if(right == null){
+            right = child;
+        }
+    }
+
+}
+class PriorityQueue{
+    ArrayList<TreeNode> s;
+    TreeNode root;
+    public PriorityQueue(){
+        s = new ArrayList<>();
+        root = null;
+    }
+    public static int pow(int a, int b){
+        int c = a;
+        if(b==0){
+            return 1;
+        }
+        for(int i = 1;i<b;i++){
+            a *=c;
+        }
+        return a;
+    }
+
+    public TreeNode getRoot(){
+        return root;
+    }
+
+    public void insert(long e, int index){
+        TreeNode node = new TreeNode(e, index);
+        s.add(node);
+        int n = s.size();
+        if(n==1){
+            root = node;
+        }else{
+            int h = (int)(Math.log(n)/Math.log(2));
+            int p = (n-pow(2,h))/2+pow(2,h-1)-1;
+            s.get(p).setChildren(node);
+            node.father = s.get(p);
+            while(node.father!=null && node.getVal()>node.father.getVal()){
+                long val = node.getVal();
+                node.setVal(node.father.getVal());
+                node.father.setVal(val);
+                int index1 = node.getIndex();
+                node.setIndex(node.father.getIndex());
+                node.father.setIndex(index1);
+                node = node.father;
+            }
+            if(node.father==null){
+                root = node;
+            }
+        }
+    }
+
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int T = in.nextInt();
+        for(int i = 0;i<T;i++){
+            int n = in.nextInt();
+            PriorityQueue q = new PriorityQueue();
+            for(int j = 1;j<=n;j++){
+                q.insert(in.nextLong(), j);
+            }
+            int k = levelTraversal(q.getRoot(),in.nextInt());
+            int a = (int)(Math.log(k)/Math.log(2))+1;
+            int b = k+1-(int)Math.pow(2,a-1);
+            System.out.println(a+" "+b);
+        }
+    }
+    public static int levelTraversal(TreeNode root, int index){
+        int n = 0;
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+        while(!q.isEmpty()){
+            TreeNode node = q.poll();
+            n++;
+            if(node.getIndex()==index){
+                break;
+            }
+            if(node.left!=null){
+                q.offer(node.left);
+            }
+            if(node.right!=null){
+                q.offer(node.right);
+            }
+        }
+        return n;
+    }
+
+}
