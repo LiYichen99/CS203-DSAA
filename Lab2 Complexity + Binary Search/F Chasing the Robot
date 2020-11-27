@@ -1,0 +1,53 @@
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        long xr = input.nextLong();
+        long yr = input.nextLong();
+        long xc = input.nextLong();
+        long yc = input.nextLong();
+        int N = input.nextInt();
+        String s = input.next();
+        char[] S = s.toCharArray();
+
+        long a = 0;
+        long b = Long.MAX_VALUE/10000;
+        long c = (a+b)/2;
+        long t;
+        while(a<b) {
+            t = 0;
+            c=(a+b)/2;
+            if(a == c){
+                c++;
+                if(c == Long.MAX_VALUE/10000){
+                    c = -1;
+                }
+                break;
+            }
+            long xr1 = xr;
+            long yr1 = yr;
+            for (int i = 0; i < N; i++) {
+                long d = ((c - i - 1) / N) + 1;
+                if (S[i] == 'U') {
+                    yr1 += d;
+                } else if (S[i] == 'D') {
+                    yr1 -= d;
+                } else if (S[i] == 'L') {
+                    xr1 -= d;
+                } else if (S[i] == 'R') {
+                    xr1 += d;
+                }
+            }
+            t = Math.abs(xr1 - xc) + Math.abs(yr1- yc);
+            if(t>c){
+                a = c;
+            }else if(t<=c) {
+                b = c;
+            }
+
+        }
+        System.out.print(c);
+    }
+}
