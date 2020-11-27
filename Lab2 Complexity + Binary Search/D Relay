@@ -1,0 +1,65 @@
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        int n = input.nextInt();
+        int m = input.nextInt();
+        long L = input.nextLong();
+        long[] p = new long[n];
+        for(int i = 0;i<n;i++){
+            p[i] = input.nextLong();
+        }
+        input.close();
+        long[] s = new long[n];
+        for(int i = 1;i<n;i++){
+            s[i -1] = p[i] - p[i -1];
+        }
+        s[n - 1] = L - p[n - 1];
+        long a = 0;
+        long b = L;
+        long c = (a+b)/2;
+        long count = 0;
+        if(m == 1){
+            System.out.print(L);
+        }else {
+            while (a<b) {
+                long sum = 0;
+                count = 0;
+                c = (a + b) / 2;
+                if(a == c){
+                    c++;
+                    break;
+                }
+                for (int i = 0; i < n; i++) {
+                    if (s[i] > c) {
+                        a = c;
+                        break;
+                    } else {
+                        if (s[i] + sum <= c) {
+                            sum += s[i];
+                            if(i == n -1){
+                                count++;
+                            }
+                        } else {
+                            sum = s[i];
+                            count++;
+                            if (i == n - 1) {
+                                count++;
+                            }
+                        }
+                    }
+                }
+                if (a != c) {
+                    if (count <= m) {
+                        b = c;
+                    } else if (count > m) {
+                        a = c;
+                    }
+                }
+            }
+           System.out.print(c);
+        }
+    }
+}
