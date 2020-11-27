@@ -1,0 +1,44 @@
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        int t = input.nextInt();
+        for(int i = 0;i<t;i++){
+            long n = input.nextLong();
+            int s = input.nextInt();
+            System.out.println(miniMunOperations(n,s));
+        }
+        input.close();
+    }
+
+    public static long miniMunOperations(long n, int s){
+        if(getSum(n) <= s){
+            return 0;
+        }else{
+            long a = n;
+            for(int i = 1;;i++){
+                long m = 1;
+                for(int j =0;j<i;j++){
+                    m *= 10;
+                }
+                n -= (n % m);
+                n += m;
+                if(getSum(n)<= s){
+                    break;
+                }
+            }
+            return (n - a);
+        }
+    }
+
+    public static long getSum(long n){
+        long sum = 0;
+        while(n != 0){
+            sum += n%10;
+            n = (n-n%10)/10;
+        }
+        return sum;
+    }
+}
