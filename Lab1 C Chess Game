@@ -1,0 +1,24 @@
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        int T = input.nextInt();
+        for(int i = 0; i < T; i++){
+            int n = input.nextInt();
+            int m = input.nextInt();
+            System.out.println(winner(n,m));
+        }
+        input.close();
+    }
+
+    public static String winner(int n, int m){
+        if(n==m && m ==1){
+            return "Bob";
+        }else{
+            return "Alice";
+        }
+    }
+
+}
