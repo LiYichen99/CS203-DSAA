@@ -1,0 +1,111 @@
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+	Scanner in = new Scanner(System.in);
+	int t = in.nextInt();
+	int k = in.nextInt();
+	long s = in.nextInt();
+	int c = t-t%100;
+	PriorityQueue q = new PriorityQueue(k);
+	for(int i = 1;i<=c;i++){
+	    q.insert_min(ref(i+s));
+	    if(i%100==0){
+	        s = q.getMin();
+            System.out.print(s+" ");
+        }
+    }
+    }
+    public static long ref(long n){
+        long a = n;
+        while(n>=10){
+            a += n%10;
+            n = n/10;
+        }
+        a+=n;
+        return a;
+    }
+
+}
+class PriorityQueue {
+    long[] s;
+    int size = 0;
+    int maxsize = 0;
+
+    public PriorityQueue(int n) {
+        s = new long[n];
+        maxsize = n;
+    }
+
+    //加入元素
+    //根最小
+    //k:队列（最后一个）要插入的位置 node: 要插入的节点
+    public void siftUp_min(int k, long node) {
+        while (k > 0) {
+            long parent = s[(k - 1) / 2];
+            if (parent <= node) {
+                break;
+            }
+            s[k] = parent;
+            k = (k - 1) / 2;
+        }
+        s[k] = node;
+    }
+
+    public void insert_min(long node) {
+        if(size==maxsize){
+            if(node>getMin()){
+                delete_min();
+            }else{
+                return;
+            }
+        }
+        s[size] = node;
+        size++;
+        siftUp_min(size - 1, node);
+    }
+
+    //删除元素
+    //k: 删除元素的位置 node: 队列的最后一个节点
+    public void siftDown_min(int k, long node) {
+        if (size == 0) {
+            return;
+        }
+        long parent = (size - 2) / 2;
+        while (k <= parent) {
+            int left = 2 * k + 1;
+            if (left >= size) {
+                break;
+            }
+            int right = left + 1;
+            //选择左右子节点中最小的
+            int best = left;
+            if (right < size && s[left] > s[right]) {
+                best = right;
+            }
+            if (node <= s[best]) {
+                break;
+            }
+            s[k] = s[best];
+            k = best;
+        }
+        s[k] = node;
+    }
+
+    public void delete_min() {
+        if (size == 0) {
+            return;
+        }
+        long node = s[size - 1];
+        s[size - 1] = 0;
+        size--;
+        siftDown_min(0, node);
+    }
+    public long getMin(){
+        if (size == 0) {
+            return -1;
+        }
+        return s[0];
+    }
+}
