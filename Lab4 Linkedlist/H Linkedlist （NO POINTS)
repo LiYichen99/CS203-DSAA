@@ -1,0 +1,96 @@
+import java.util.Scanner;
+class Node{
+    long element;
+    Node prev;
+    Node next;
+    public Node(long element){
+        this.element = element;
+        prev = null;
+        next = null;
+    }
+    public long getElement() {
+        return element;
+    }
+    public void setElement(long element){
+        this.element = element;
+    }
+
+}
+class LinkedList{
+    Node tail;
+    Node head;
+    private int count = 0;
+    public int size(){
+        return count;
+    }
+    public LinkedList(){
+        head = new Node(-1);
+        tail = new Node(-1);
+        head.next = tail;
+        tail.prev = head;
+    }
+    public Node getNode(int p){
+        Node node = head;
+        for(int i =0;i<p;i++){
+            node = node.next;
+        }
+        return node;
+    }
+    public void insert(int p, long x){
+        Node node = getNode(p);
+        Node newNode = new Node(x);
+        newNode.prev = node.prev;
+        newNode.next = node;
+        node.prev.next = newNode;
+        node.prev = newNode;
+        count++;
+    }
+    public long query(int p){
+        Node node = getNode(p);
+        return node.getElement();
+    }
+    public void remove(int p){
+        Node node = getNode(p);
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+        node.prev = null;
+        node.next = null;
+        count--;
+    }
+    public void add(long x){
+        Node node = new Node(x);
+        node.prev = tail.prev;
+        node.next = tail;
+        tail.prev.next = node;
+        tail.prev = node;
+        count++;
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int m = in.nextInt();
+        LinkedList a = new LinkedList();
+        for (int i = 0; i < n; i++) {
+            a.add(in.nextLong());
+        }
+        for (int i = 0; i < m; i++) {
+            char c = in.next().charAt(0);
+            if(c=='i'){
+                int p = in.nextInt();
+                long x = in.nextLong();
+                a.insert(p,x);
+            }else if(c=='q'){
+                int p = in.nextInt();
+                System.out.println(a.query(p));
+            }else if(c=='r'){
+                int p = in.nextInt();
+                a.remove(p);
+            }
+        }
+        in.close();
+    }
+}
