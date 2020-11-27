@@ -1,0 +1,96 @@
+import java.util.Scanner;
+class Node{
+    int c;
+    Node next;
+    Node prev;
+    public Node(int c){
+        this.c = c;
+        prev = null;
+        next = null;
+    }
+    public int getC(){
+        return c;
+    }
+
+}
+
+class Stack{
+    Node head;
+    Node tail;
+    int count = 0;
+    public Stack(){
+        head = new Node(-1);
+        tail = new Node(-1);
+        head.next = tail;
+        tail.prev = head;
+    }
+    public void push(int c){
+        Node node = new Node(c);
+        node.prev = tail.prev;
+        node.next = tail;
+        tail.prev.next = node;
+        tail.prev = node;
+        count++;
+    }
+    public void pop(){
+        if(count != 0) {
+            Node node = tail.prev;
+            node.prev.next = tail;
+            tail.prev = node.prev;
+            node.prev = null;
+            node.next = null;
+            count--;
+        }
+    }
+    public int top(){
+        if(isEmpty()){
+            return -1;
+        }
+        return tail.prev.getC();
+    }
+    public boolean isEmpty(){
+        return count==0;
+    }
+
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        String s = in.next();
+        Stack[] a = new Stack[100000];
+        Stack y = new Stack();
+        for(int i = 0;i<100000;i++){
+            a[i] = new Stack();
+        }
+        int[] b = new int[100000];
+        int x = -1;
+        while(!s.equals("nsdd")){
+            if(s.equals("put-in")){
+                int c = in.nextInt();
+                b[c-1]++;
+                a[b[c-1]-1].push(c);
+                if(x<b[c-1]-1){
+                    x = b[c-1]-1;
+                    y.push(x);
+                }
+            }else if(s.equals("eat")){
+                if(x>-1){
+                    System.out.println(a[x].top());
+                    b[a[x].top()-1]--;
+                    a[x].pop();
+                    if(a[x].isEmpty()){
+                        y.pop();
+                        x = y.top();
+                    }
+                }else{
+                    System.out.println("pa");
+                }
+            }
+            s = in.next();
+        }
+
+        in.close();
+    }
+}
