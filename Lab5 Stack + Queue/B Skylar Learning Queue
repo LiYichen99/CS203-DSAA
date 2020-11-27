@@ -1,0 +1,84 @@
+import java.util.Scanner;
+class Node {
+    int element;
+    Node next;
+    Node prev;
+    public Node(int element) {
+        this.element = element;
+        next = null;
+        prev = null;
+    }
+    public int getElement(){ return element; }
+}
+class Queue{
+    Node head;
+    Node tail;
+    int count = 0;
+    public int size(){
+        return count;
+    }
+    public Queue(){
+        head = new Node(0);
+        tail = new Node(0);
+        head.next = tail;
+        tail.prev = head;
+    }
+    public void enqueue(int element){
+        Node node = new Node(element);
+        node.prev = tail.prev;
+        node.next = tail;
+        tail.prev.next = node;
+        tail.prev = node;
+        count++;
+    }
+    public void dequeue(){
+        if(count!=0){
+            Node node = head.next;
+            node.next.prev = head;
+            head.next = node.next;
+            node.prev = null;
+            node.next = null;
+            count--;
+        }
+    }
+    public boolean isEmpty(){
+        return size() == 0;
+    }
+    public int getHead(){
+        return head.next.getElement();
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        Queue a = new Queue();
+        for(int i = 0;i<n;i++){
+            char op = in.next().charAt(0);
+            if(op == 'E'){
+                int element = in.nextInt();
+                a.enqueue(element);
+            }else if(op == 'A'){
+                if(a.isEmpty()){
+                    System.out.println();
+                }else {
+                    System.out.println(a.getHead());
+                }
+            }else if(op == 'D'){
+                a.dequeue();
+            }
+        }
+        if(a.isEmpty()){
+            System.out.println();
+        }else{
+            Node node = a.head;
+            for(int i = 0;i<a.size();i++){
+                node = node.next;
+                System.out.print(node.getElement()+" ");
+            }
+        }
+
+    }
+}
