@@ -1,0 +1,147 @@
+public class Main {
+
+    public static void main(String[] args) {
+
+    }
+
+    public static long[] selectionSort(long[] a, int n){
+        for(int i = 0;i<n;i++){
+            int k = i;
+            for(int j = i+1;j<n;j++){
+               if(a[j]<a[k]){
+                   k = j;
+               }
+            }
+            long b = a[i];
+            a[i] = a[k];
+            a[k] = b;
+        }
+        return a;
+    }
+
+    public static long[] insertionSort(long[] a, int n){
+        for(int i = 0;i<n;i++){
+            for(int j = i;j>0;j--){
+                if(a[j-1]>a[j]){
+                    long b = a[j-1];
+                    a[j-1] = a[j];
+                    a[j] = b;
+                }
+            }
+        }
+        return a;
+    }
+
+    public static long[] bubbleSort(long[] a, int n){
+        for(int i = 0;i<n-1;i++){
+            for(int j = 1;j<n;j++){
+                if(a[j-1]>a[j]){
+                    long b = a[j-1];
+                    a[j-1] = a[j];
+                    a[j] = b;
+                }
+            }
+        }
+        return a;
+    }
+
+    public static long[] mergeSort(long[] a, int n){
+        if(n>1){
+            int p = n/2;
+            long[] b = new long[p];
+            long[] c = new long[n-p];
+            for(int i = 0;i<p;i++){
+                b[i] = a[i];
+            }
+            for(int i = 0;i<n-p;i++){
+                c[i] = a[p+i];
+            }
+            b = mergeSort(b,b.length);
+            c = mergeSort(c,c.length);
+            a = merge(b,c);
+        }
+        return a;
+    }
+
+    public static long[] merge(long[] b, long[] c){
+        long[] a = new long[b.length+c.length];
+        int i = 0;
+        int j = 0;
+        for(int k = 0;k<a.length;k++){
+            if(i<b.length && (j>=c.length || b[i]<=c[j])){
+                a[k] = b[i];
+            }else{
+                a[k] = c[j];
+            }
+        }
+        return a;
+    }
+
+    public static int[][] mergeSort(int[][] a, int n){
+        if(n>1){
+            int p = n/2;
+            int[][] b = new int[p][2];
+            int[][] c = new int[n-p][2];
+            for(int i = 0;i<p;i++){
+                b[i][0] = a[i][0];
+                b[i][1] = a[i][1];
+            }
+            for(int i = 0;i<n-p;i++){
+                c[i][0] = a[p+i][0];
+                c[i][1] = a[p+i][1];
+            }
+            int[][] bb = mergeSort(b, b.length);
+            int[][] cc = mergeSort(c, c.length);
+            a = merge(bb,cc);
+        }
+        return a;
+    }
+
+    public static int[][] merge(int[][] b, int[][] c){
+        int[][] a = new int[b.length+c.length][2];
+        int i = 0;
+        int j = 0;
+        for(int k = 0;k<a.length;k++){
+            if(i<b.length && (j>=c.length || b[i][0]<=c[j][0])){
+                a[k][0] = b[i][0];
+                a[k][1] = b[i][1];
+                i++;
+            }else{
+                a[k][0] = c[j][0];
+                a[k][1] = c[j][1];
+                j++;
+            }
+        }
+        return a;
+    }
+
+
+    public static long[] quickSort(long[] a, int start, int end){
+        long pivot = a[start];
+        int i = start;
+        int j = end;
+        while(i<j) {
+            if (i < j && a[j] > pivot) {
+                j--;
+            }
+            if (i < j && a[i] < pivot) {
+                i++;
+            }
+            if (a[i] == a[j] && i < j) {
+                i++;
+            }
+            long b = a[i];
+            a[i] = a[j];
+            a[j] = b;
+        }
+        if(i-1>start){
+            quickSort(a,start, i-1);
+        }
+        if(j+1<end){
+            quickSort(a,j+1,end);
+        }
+        return a;
+    }
+
+
+}
