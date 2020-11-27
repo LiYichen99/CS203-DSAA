@@ -1,0 +1,123 @@
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+class TreeNode{
+    long val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode father;
+    public TreeNode(long val){
+        this.val = val;
+        left = null;
+        right = null;
+        father = null;
+    }
+
+    public void setFather(TreeNode father) {
+        this.father = father;
+    }
+    public TreeNode getFather(){
+        return father;
+    }
+
+    public void setLeft(TreeNode left) {
+        this.left = left;
+    }
+
+    public void setRight(TreeNode right) {
+        this.right = right;
+    }
+
+    public long getVal(){
+        return val;
+    }
+
+    public void setChildren(TreeNode node){
+        if(left == null){
+            setLeft(node);
+        }else{
+            setRight(node);
+        }
+    }
+
+}
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int T = in.nextInt();
+        for(int i = 1;i<=T;i++){
+            int n = in.nextInt();
+            TreeNode[] a = new TreeNode[n];
+            String ans = "YES";
+            char judge = '=';
+            for(int j = 0;j<n;j++){
+                a[j] = new TreeNode(in.nextLong());
+            }
+            for(int j = 1;j<n;j++){
+                int p = in.nextInt();
+                int q = in.nextInt();
+                if(a[p-1].right==null){
+                    a[p-1].setChildren(a[q-1]);
+                    a[q-1].setFather(a[p-1]);
+                    if(judge == '='){
+                        if(a[p-1].getVal()<a[q-1].getVal()){
+                            judge = '<';
+                        }else if(a[p-1].getVal()>a[q-1].getVal()){
+                            judge = '>';
+                        }
+                    }else if(judge == '<'){
+                        if(a[p-1].getVal()>a[q-1].getVal()){
+                            ans = "NO";
+                        }
+                    }else{
+                        if(a[p-1].getVal()<a[q-1].getVal()){
+                            ans = "NO";
+                        }
+                    }
+                }else{
+                    ans = "NO";
+                }
+            }
+            if(ans.equals("YES")){
+                TreeNode root = a[0];
+                for(int j = 0;j<n;j++){
+                    if(a[j].getFather()==null){
+                        root = a[j];
+                        break;
+                    }
+                }
+                boolean b = isCompleteBinaryTree(root);
+                if(!b){
+                    ans = "NO";
+                }
+                }
+            System.out.printf("Case #%d: %s\n", i,ans);
+        }
+    }
+    public static boolean isCompleteBinaryTree(TreeNode root){
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+        while(!q.isEmpty()){
+            TreeNode node = q.poll();
+            if(node.left!=null && node.right!=null){
+                q.offer(node.left);
+                q.offer(node.right);
+            }else if(node.left==null && node.right!=null){
+                return false;
+            }else{
+                if(node.left!=null){
+                    q.offer(node.left);
+                }
+                while(!q.isEmpty()){
+                    node = q.poll();
+                    if(!(node.left==null && node.right==null)){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+}
