@@ -1,0 +1,217 @@
+public class Main {
+
+    public static void main(String[] args) {
+
+    }
+}
+class TreeNode{
+    private long val;
+    TreeNode left;
+    TreeNode right;
+    public TreeNode(long val){
+        this.val = val;
+        left = null;
+        right = null;
+    }
+
+    public long getVal() {
+        return val;
+    }
+
+    public void setVal(long val) {
+        this.val = val;
+    }
+}
+//构建BST
+class BinarySearchTree{
+    TreeNode root;
+    int size;
+    public BinarySearchTree(){
+        root = null;
+        size = 0;
+    }
+    public int size(){
+        return size;
+    }
+    public boolean isEmpty(){
+        return size == 0;
+    }
+    //添加节点
+    public void add(long val){
+        root = add(root, val);
+    }
+    public void add(TreeNode node){
+        root = add(root, node.getVal());
+    }
+    public TreeNode add(TreeNode root, long val){
+        if(root == null){
+            size++;
+            return new TreeNode(val);
+        }
+        if(val<root.getVal()){
+            root.left = add(root.left, val);
+        }else if(val>root.getVal()){
+            root.right = add(root.right, val);
+        }
+        return new TreeNode(val);
+    }
+    //是否包含
+    public boolean contains(long val){
+        return contains(root, val);
+    }
+    public boolean contains(TreeNode root, long val){
+        if(root == null){
+            return false;
+        }
+        if(root.getVal() == val){
+            return true;
+        }else if(root.getVal()<val){
+            return contains(root.right, val);
+        }else{
+            return contains(root.left, val);
+        }
+    }
+    //遍历：中序遍历
+
+    //得到节点
+    public TreeNode getNode(TreeNode root, long val){
+        if(root == null){
+            return null;
+        }
+        if(root.getVal() == val){
+            return root;
+        }else if(root.getVal() < val){
+            return getNode(root.right, val);
+        }else{
+            return getNode(root.left, val);
+        }
+    }
+    //得到最大节点
+    public TreeNode max(){
+        return maxNode(root);
+    }
+
+    //得到以node为根结点的最大值结点
+    public TreeNode maxNode(TreeNode root){
+        if(root.right == null){
+            return root;
+        }
+        return maxNode(root.right);
+    }
+    //得到最小节点
+    public TreeNode min(){
+        return minNode(root);
+    }
+    //得到以node为根结点的最小值结点
+    public TreeNode minNode(TreeNode root){
+        if(root.left == null){
+            return root;
+        }
+        return minNode(root.left);
+    }
+    //删除最大节点
+    public long removeMax(){
+        long ret = max().getVal();
+        root = removeMax(root);
+        return ret;
+    }
+    //删除以node为根结点的最大值结点，并且返回新的根结点
+    public TreeNode removeMax(TreeNode root){
+        if(root.right == null){
+            TreeNode leftNode = root.left;
+            root.left = null;
+            size--;
+            return leftNode;
+        }
+        root.right = removeMax(root.right);
+        return root;
+    }
+    //删除最小节点
+    public long removeMin(){
+        long ret = min().getVal();
+        root = removeMin(root);
+        return ret;
+    }
+    //删除以node为根结点的最小值结点，并且返回新的根结点
+    public TreeNode removeMin(TreeNode root){
+        if(root.left == null){
+            TreeNode rightNode = root.right;
+            root.right = null;
+            size--;
+            return rightNode;
+        }
+        root.left = removeMin(root.left);
+        return root;
+    }
+    //删除指定元素
+    public long removeElement(long val){
+        TreeNode node = getNode(root, val);
+        if(node != null){
+            root = remove(root, val);
+            return val;
+        }
+        return -1;
+    }
+    public long removeNode(TreeNode node){
+        if(node != null){
+            root = remove(root, node.getVal());
+            return node.getVal();
+        }
+        return -1;
+    }
+
+    public TreeNode remove(TreeNode root, long val){
+        if(root == null){
+            return null;
+        }
+        if(val<root.getVal()){
+            root.left = remove(root.left, val);
+            return root;
+        }else if(val>root.getVal()){
+            root.right = remove(root.right, val);
+            return root;
+        }else{ //val == root.getVal()
+            //左子树为空
+            if(root.left == null){
+                TreeNode rightNode = root.right;
+                root.right = null;
+                size--;
+                return rightNode;
+            }
+            //右子树为空
+            else if(root.right == null){
+                TreeNode leftNode = root.left;
+                root.left = null;
+                size--;
+                return leftNode;
+            }
+            //左右子树均不为空
+            else{
+                TreeNode minNode = minNode(root.right);
+                minNode.right = removeMin(root.right);
+                minNode.left = root.left;
+                root.left = null;
+                root.right= null;
+                size--;
+                return minNode;
+            }
+        }
+    }
+    //判断是否是BST
+    public boolean isBST(){
+        return isBST(root);
+    }
+    public boolean isBST(TreeNode root){
+        if(root == null){
+            return true;
+        }
+        if(root.left != null && root.left.getVal() > root.getVal()){
+            return false;
+        }
+        if(root.right != null && root.right.getVal() < root.getVal()){
+            return false;
+        }
+        return isBST(root.left) && isBST(root.right);
+    }
+
+}
