@@ -297,11 +297,11 @@ class AVLTree{
         setSubTreeSize(retNode);
         int BalanceFactor = getBalanceFactor(retNode);
         //LL右旋
-        if(BalanceFactor>1 && getBalanceFactor(retNode.left)>0){
+        if(BalanceFactor>1 && getBalanceFactor(retNode.left)>=0){
             return rightRotate(retNode);
         }
         //RR左旋
-        if(BalanceFactor<-1 && getBalanceFactor(retNode.right)<0){
+        if(BalanceFactor<-1 && getBalanceFactor(retNode.right)<=0){
             return leftRotate(retNode);
         }
         //LR: 先左旋成LL，再右旋
