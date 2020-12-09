@@ -1,4 +1,4 @@
-//有bug 重复元素时会崩
+//有bug 重复元素时会崩 remove的successor有问题
 public class Main {
 
     public static void main(String[] args) {
