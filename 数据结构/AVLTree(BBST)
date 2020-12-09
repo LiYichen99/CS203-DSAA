@@ -1,4 +1,4 @@
-//有bug 重复元素时会崩 remove的successor有问题
+//有bug 重复元素时可能会崩 （remove的root和successor之间存在和successor相等的元素时）
 public class Main {
 
     public static void main(String[] args) {
