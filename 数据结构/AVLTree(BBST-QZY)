@@ -1,0 +1,413 @@
+	static class Node{
+		long key;
+		int height;
+		Node left;
+		Node right;
+		int subTreesize;
+		Node(long key)
+		{
+			this.key=key;
+			this.left=null;
+			this.right=null;
+			this.height=1;
+			this.subTreesize=1;
+		}	
+	}
+	public static int height(Node node)
+		{
+			if(node!=null)
+			{
+				return node.height;
+			}
+			return 0;
+		}
+	public static Node insert(Node node,long key)
+	{
+		if(node==null)
+		{
+			return new Node(key);
+		}else
+		{		
+			if(key<node.key)//插入左子树
+			{
+				node.left=insert(node.left,key);
+				//需要调整
+				if(height(node.left)-height(node.right)==2)
+				{
+					if(key<node.left.key)
+					{
+						node=LLremix(node);
+					}else
+					{
+						node=LRremix(node);
+					}
+				}
+			}else//插入右子树
+			{
+				node.right=insert(node.right,key);
+//				node.height=Math.max(height(node.left), height(node.right))+1;
+//				node.subTreesize=subTreesize(node);
+				//需要调整
+				if(height(node.right)-height(node.left)==2)
+				{
+					if(key>node.right.key)
+					{
+						node=RRremix(node);
+					}else
+					{
+						node=RLremix(node);
+					}
+				}
+			}	
+		}
+		node.height=Math.max(height(node.left), height(node.right))+1;
+		node.subTreesize=subTreesize(node);
+		return node;
+	}
+	public static int subTreesize(Node node)
+	{
+		if(node==null)
+		{
+			return 0;
+		}
+		return getsubTreesize(node.left)+getsubTreesize(node.right)+1;
+	}
+	public static Node LLremix(Node node)
+	{
+		Node k=node.left;
+		node.left=k.right;
+		k.right=node;
+		node.height=Math.max(height(node.left),height(node.right))+1;
+		k.height=Math.max(height(k.left), height(k.right))+1;
+		node.subTreesize=subTreesize(node);
+		k.subTreesize=subTreesize(k);
+		return k;
+	}
+	public static Node LRremix(Node node)
+	{
+		node.left=RRremix(node.left);
+		return LLremix(node);
+	}
+	public static Node RRremix(Node node)
+	{
+		Node k=node.right;
+	    node.right = k.left;
+	    k.left = node;
+	    node.height = Math.max( height(node.left), height(node.right)) + 1;
+	    k.height = Math.max( height(k.right), height(k.left)) + 1;
+	    node.subTreesize=subTreesize(node);
+		k.subTreesize=subTreesize(k);
+	    return k;
+	}
+	public static Node RLremix(Node node)
+	{
+		node.right=LLremix(node.right);
+		return RRremix(node);
+	}
+	public static int getsubTreesize(Node node)
+	{
+		if(node!=null)
+		{
+			return node.subTreesize;
+		}else
+		{
+			return 0;
+		}
+	}
+	public static Node search(Node node,int index)
+	{
+		if(index>subTreesize(node))
+		{
+			return null;
+		}else
+		{
+			if(node.left==null&&node.right==null)
+			{
+				return node;
+			}else if(node.left!=null)
+			{
+				int le=getsubTreesize(node.left)+1;
+				if(le==index)
+				{
+					return node;
+				}else if(le>index)
+				{
+					return search(node.left,index);
+				}else
+				{
+					return search(node.right,index-le);
+				}
+			}else
+			{
+				if(index==1)
+				{
+					return node;
+				}else
+				{
+					return search(node.right,index-1);
+				}
+			}
+		}
+	}
+	public static Node min(Node node)
+	{
+		if(node.left==null)
+		{
+			return node;
+		}else
+		{
+			return min(node.left);
+		}
+	}
+	public static Node clean(Node node){
+		node.left=null;
+		node.right=null;
+		return node;
+	}
+	public static Node max(Node node)
+	{
+		if(node.right==null)
+		{
+			return node;
+		}else
+		{
+			return max(node.right);
+		}
+	}
+	public static Node delete(Node node,Node d)
+	{
+		if(node==null||d==null)
+		{
+			return null;
+		}
+//			Node rnode = null;
+			if(d.key<node.key)
+			{
+				node.left=delete(node.left,d);
+//				if(node!=null)
+//				{
+//					node.height=Math.max(height(node.left), height(node.right))+1;
+//				}
+//				node.subTreesize=subTreesize(node);
+//				rnode=node;
+//				if(node!=null)
+//				{
+//					node.height=Math.max(height(node.left), height(node.right))+1;
+//					node.subTreesize=subTreesize(node);
+//				}
+				if (height(node.right) - height(node.left) == 2) 
+				{
+		            Node r =  node.right;
+		            if (height(r.left) > height(r.right)) {
+		                node= RLremix(node);
+		            }else {
+		                node = RRremix(node);
+		            }
+				}
+			}else if(d.key>node.key)
+			{
+				node.right=delete(node.right,d);
+//				if(node!=null)
+//				{
+//					node.height=Math.max(height(node.left), height(node.right))+1;
+//				}
+//				node.subTreesize=subTreesize(node);
+//				if(node!=null)
+//				{
+//					node.height=Math.max(height(node.left), height(node.right))+1;
+//					node.subTreesize=subTreesize(node);
+//				}
+				if (height(node.left) - height(node.right) == 2) 
+				{
+		            Node l =  node.left;
+		            if (height(l.right) > height(l.left)) {
+		                node= LRremix(node);
+		            }else {
+		                node= LLremix(node);
+		            }
+		        }
+			}else {
+				if(node.left!=null&&node.right!=null)
+				{
+					if(height(node.left)>height(node.right))
+					{
+						Node max=max(node.left);
+						node.key=max.key;
+						node.left=delete(node.left,max);
+//						if(node!=null)
+//						{
+//							node.height=Math.max(height(node.left), height(node.right))+1;
+//						}
+//						node.subTreesize=subTreesize(node);		
+					}else
+					{
+						Node min=min(node.right);
+						node.key=min.key;
+						node.right=delete(node.right,min);
+//						if(node!=null)
+//						{
+//							node.height=Math.max(height(node.left), height(node.right))+1;
+//						}
+//						node.subTreesize=subTreesize(node);			
+					}
+				}else
+				{
+					Node tmp = node;
+		            node = (node.left!=null) ? node.left : node.right;
+		            tmp = null;
+				}
+			}	
+			if(node!=null)
+			{
+				node.height=Math.max(height(node.left), height(node.right))+1;
+			node.subTreesize=subTreesize(node);
+			}
+			
+			return node;
+	}
+	public static Node successor(Node node)
+	{
+		Node successor = min(node.right);
+	    successor.right = delete(node.right, successor);
+	    successor.left = node.left;
+	    node.left = null;
+	    node.right = null;
+	    return successor;
+	}
+	public static long findmax(Node node)
+	{
+		if(node.right==null)
+		{
+			return node.key;
+		}else
+		{
+			return findmax(node.right);
+		}
+	}
+	public static long findmin(Node node)
+	{
+		if(node.left==null)
+		{
+			return node.key;
+		}else
+		{
+			return findmin(node.left);
+		}
+	}
+	///* 
+	// * 删除结点(z)，返回根节点
+	// *
+	// * 参数说明：
+	// *     tree AVL树的根结点
+	// *     z 待删除的结点
+	// * 返回值：
+	// *     根节点
+	// */
+	//private Node remove(Node tree, Node z) {
+//	    // 根为空 或者 没有要删除的节点，直接返回null。
+//	    if (tree==null || z==null)
+//	        return null;
+	//
+//	    //int cmp = z.key.compareTo(tree.key);
+//	    //if (cmp < 0) {        // 待删除的节点在"tree的左子树"中
+//	        tree.left = remove(tree.left, z);
+//	        // 删除节点后，若AVL树失去平衡，则进行相应的调节。
+//	        if (height(tree.right) - height(tree.left) == 2) {
+//	            Node r =  tree.right;
+//	            if (height(r.left) > height(r.right))
+//	               // tree = rightLeftRotation(tree);
+//	            //else
+//	               // tree = rightRightRotation(tree);
+//	        }
+	//   // } else if (cmp > 0) {    // 待删除的节点在"tree的右子树"中
+//	        //tree.right = remove(tree.right, z);
+//	        // 删除节点后，若AVL树失去平衡，则进行相应的调节。
+//	        if (height(tree.left) - height(tree.right) == 2) {
+//	            AVLTreeNode<T> l =  tree.left;
+//	            if (height(l.right) > height(l.left))
+//	                tree = leftRightRotation(tree);
+//	            else
+//	                tree = leftLeftRotation(tree);
+//	        }
+//	    } else {    // tree是对应要删除的节点。
+//	        // tree的左右孩子都非空
+//	        if ((tree.left!=null) && (tree.right!=null)) {
+//	            if (height(tree.left) > height(tree.right)) {
+//	                // 如果tree的左子树比右子树高；
+//	                // 则(01)找出tree的左子树中的最大节点
+//	                //   (02)将该最大节点的值赋值给tree。
+//	                //   (03)删除该最大节点。
+//	                // 这类似于用"tree的左子树中最大节点"做"tree"的替身；
+//	                // 采用这种方式的好处是：删除"tree的左子树中最大节点"之后，AVL树仍然是平衡的。
+//	                AVLTreeNode<T> max = maximum(tree.left);
+//	                tree.key = max.key;
+//	                tree.left = remove(tree.left, max);
+//	            } else {
+//	                // 如果tree的左子树不比右子树高(即它们相等，或右子树比左子树高1)
+//	                // 则(01)找出tree的右子树中的最小节点
+//	                //   (02)将该最小节点的值赋值给tree。
+//	                //   (03)删除该最小节点。
+//	                // 这类似于用"tree的右子树中最小节点"做"tree"的替身；
+//	                // 采用这种方式的好处是：删除"tree的右子树中最小节点"之后，AVL树仍然是平衡的。
+//	                AVLTreeNode<T> min = maximum(tree.right);
+//	                tree.key = min.key;
+//	                tree.right = remove(tree.right, min);
+//	            }
+//	        } else {
+//	            AVLTreeNode<T> tmp = tree;
+//	            tree = (tree.left!=null) ? tree.left : tree.right;
+//	            tmp = null;
+//	        }
+//	    }
+	//
+//	    return tree;
+	//}
+	//
+	//public void remove(T key) {
+//	    AVLTreeNode<T> z; 
+	//
+//	    if ((z = search(mRoot, key)) != null)
+//	        mRoot = remove(mRoot, z);
+	//}
+	public static Node match(Node node,long key)
+	{
+		if(node==null)
+		{
+			return node;
+		}
+		if(key<node.key)
+		{
+			return match(node.left,key);
+		}else if(key>node.key)
+		{
+			return match(node.right,key);
+		}else {
+			return node;
+		}
+	}
+	public static Node delete(Node node,long key)
+	{
+		Node d=match(node,key);
+		if(d!=null)
+		{
+			return delete(node,d);
+		}else
+		{
+			return node;
+		}
+	}
+	public static Node findMinCloest(Node tree,Node node,long key)
+	{
+		if(Math.abs(tree.key-key)<Math.abs(node.key-key)){
+            node = tree;
+        }else if(Math.abs(tree.key-key)==Math.abs(node.key-key) && tree.key<node.key){
+            node = tree;
+        }
+        if(key<tree.key && tree.left!=null){
+            return findMinCloest(tree.left, node, key);
+        }
+        if(key>tree.key && tree.right!=null){
+            return findMinCloest(tree.right, node, key);
+        }
+        return node;
+	}
