@@ -1,0 +1,197 @@
+import java.io.*;
+import java.util.*;
+class Node{
+    int val;
+    int inDegree;
+    ArrayList<Node> next;
+    ArrayList<Node> prev;
+    public Node(int val){
+        this.val = val;
+        inDegree = 0;
+        next = new ArrayList<>();
+        prev = new ArrayList<>();
+    }
+
+    public void next(Node node){
+        next.add(node);
+    }
+    public void prev(Node node){
+        prev.add(node);
+        inDegree++;
+    }
+
+}
+public class Main{
+
+    public static void main(String[] args) throws IOException {
+        Reader in=new Reader();
+        PrintWriter out=new PrintWriter(System.out);
+        int n=in.nextInt();
+        int m=in.nextInt();
+        Node[] node = new Node[n];
+        for (int i=0;i<n;i++){
+            node[i] = new Node(i+1);
+        }
+        for (int i=0;i<m;i++){
+            int a=in.nextInt()-1;
+            int b=in.nextInt()-1;
+            node[b].prev(node[a]);
+            node[a].next(node[b]);
+        }
+        PriorityQueue<Node> q=new PriorityQueue<>(new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                if (o1.val<o2.val) {
+                    return -1;
+                } else if (o1.val>o2.val) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+        for (int i=0;i<n;i++){
+            if (node[i].inDegree==0){
+                q.offer(node[i]);
+            }
+        }
+        while (!q.isEmpty()){
+            Node nd =q.poll();
+            out.print(nd.val+" ");
+            if (!nd.next.isEmpty()) {
+                for (int i = 0; i < nd.next.size(); i++) {
+                    Node nextNd = nd.next.get(i);
+                    nextNd.inDegree--;
+                    if (nextNd.inDegree == 0) {
+                        q.offer(nextNd);
+                    }
+                }
+            }
+        }
+        out.close();
+    }
+
+
+
+    static class Reader
+    {
+        final private int BUFFER_SIZE = 1 << 16;
+        private DataInputStream din;
+        private byte[] buffer;
+        private int bufferPointer, bytesRead;
+
+        public Reader()
+        {
+            din = new DataInputStream(System.in);
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+
+        public Reader(String file_name) throws IOException
+        {
+            din = new DataInputStream(new FileInputStream(file_name));
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+
+        public String readLine() throws IOException
+        {
+            byte[] buf = new byte[64]; // line length
+            int cnt = 0, c;
+            while ((c = read()) != -1)
+            {
+                if (c == '\n')
+                    break;
+                buf[cnt++] = (byte) c;
+            }
+            return new String(buf, 0, cnt);
+        }
+
+        public int nextInt() throws IOException
+        {
+            int ret = 0;
+            byte c = read();
+            while (c <= ' ')
+                c = read();
+            boolean neg = (c == '-');
+            if (neg)
+                c = read();
+            do
+            {
+                ret = ret * 10 + c - '0';
+            }  while ((c = read()) >= '0' && c <= '9');
+
+            if (neg)
+                return -ret;
+            return ret;
+        }
+
+        public long nextLong() throws IOException
+        {
+            long ret = 0;
+            byte c = read();
+            while (c <= ' ')
+                c = read();
+            boolean neg = (c == '-');
+            if (neg)
+                c = read();
+            do {
+                ret = ret * 10 + c - '0';
+            }
+            while ((c = read()) >= '0' && c <= '9');
+            if (neg)
+                return -ret;
+            return ret;
+        }
+
+        public double nextDouble() throws IOException
+        {
+            double ret = 0, div = 1;
+            byte c = read();
+            while (c <= ' ')
+                c = read();
+            boolean neg = (c == '-');
+            if (neg)
+                c = read();
+
+            do {
+                ret = ret * 10 + c - '0';
+            }
+            while ((c = read()) >= '0' && c <= '9');
+
+            if (c == '.')
+            {
+                while ((c = read()) >= '0' && c <= '9')
+                {
+                    ret += (c - '0') / (div *= 10);
+                }
+            }
+
+            if (neg)
+                return -ret;
+            return ret;
+        }
+
+        private void fillBuffer() throws IOException
+        {
+            bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
+            if (bytesRead == -1)
+                buffer[0] = -1;
+        }
+
+        private byte read() throws IOException
+        {
+            if (bufferPointer == bytesRead)
+                fillBuffer();
+            return buffer[bufferPointer++];
+        }
+
+        public void close() throws IOException
+        {
+            if (din == null)
+                return;
+            din.close();
+        }
+    }
+
+}
