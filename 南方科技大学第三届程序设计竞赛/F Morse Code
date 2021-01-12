@@ -1,0 +1,68 @@
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+	    int T = in.nextInt();
+        for (int i = 0; i < T; i++) {
+            int n = in.nextInt();
+            char[] c = new char[n];
+            for (int j = 0; j < n; j++) {
+                String s = in.next();
+                switch(s){
+                    case ".-": c[j] = 'A';break;
+                    case "-...": c[j] = 'B';break;
+                    case "-.-.": c[j] = 'C';break;
+                    case "-..": c[j] = 'D';break;
+                    case ".": c[j] = 'E';break;
+                    case "..-.": c[j] = 'F';break;
+                    case "--.": c[j] = 'G';break;
+                    case "....": c[j] = 'H';break;
+                    case "..": c[j] = 'I';break;
+                    case ".---": c[j] = 'J';break;
+                    case "-.-": c[j] = 'K';break;
+                    case ".-..": c[j] = 'L';break;
+                    case "--": c[j] = 'M';break;
+                    case "-.": c[j] = 'N';break;
+                    case "---": c[j] = 'O';break;
+                    case ".--.": c[j] = 'P';break;
+                    case "--.-": c[j] = 'Q';break;
+                    case ".-.": c[j] = 'R';break;
+                    case "...": c[j] = 'S';break;
+                    case "-": c[j] = 'T';break;
+                    case "..-": c[j] = 'U';break;
+                    case "...-": c[j] = 'V';break;
+                    case ".--": c[j] = 'W';break;
+                    case "-..-": c[j] = 'X';break;
+                    case "-.--": c[j] = 'Y';break;
+                    case "--..": c[j] = 'Z';break;
+                    case ".----": c[j] = '1';break;
+                    case "..---": c[j] = '2';break;
+                    case "...--": c[j] = '3';break;
+                    case "....-": c[j] = '4';break;
+                    case ".....": c[j] = '5';break;
+                    case "-....": c[j] = '6';break;
+                    case "--...": c[j] = '7';break;
+                    case "---..": c[j] = '8';break;
+                    case "----.": c[j] = '9';break;
+                    case "-----": c[j] = '0';break;
+                    default:;
+                }
+            }
+            int p = n/2;
+            char[] d = new char[n];
+            int k = 0;
+            for (int j = 0; j < p; j++) {
+                d[k] = c[j];
+                k++;
+                d[k] = c[j+p];
+                k++;
+            }
+            for (int j = 0; j < n; j++) {
+                System.out.print(d[j]);
+            }
+            System.out.println();
+        }
+    }
+}
